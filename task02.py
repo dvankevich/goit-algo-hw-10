@@ -1,10 +1,15 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy.integrate as spi
+import random
 
 # Визначення функції та межі інтегрування
 def f(x):
     return x ** 2
+
+def is_inside(func, x, y):
+    """Перевіряє, чи знаходиться точка (x, y) всередині "сірої зони"."""
+    return y <= func(x)
 
 a = 0  # Нижня межа
 b = 2  # Верхня межа
