@@ -11,8 +11,32 @@ def is_inside(func, x, y):
     """Перевіряє, чи знаходиться точка (x, y) всередині "сірої зони"."""
     return y <= func(x)
 
-a = 0  # Нижня межа
+def monte_carlo_simulation(a, b, num_experiments, func):
+    """Виконує серію експериментів методом Монте-Карло."""
+    average_area = 0
+
+    for _ in range(num_experiments):
+        # Генерація випадкових точок
+        points = [(random.uniform(0, a), random.uniform(0, b)) for _ in range(15000)]
+        # Відбір точок, що знаходяться всередині трикутника
+        inside_points = [point for point in points if is_inside(point[0], point[1], func)]
+
+        # Розрахунок площі за методом Монте-Карло
+        M = len(inside_points)
+        N = len(points)
+        area = (M / N) * (a * b)
+
+        # Додавання до середньої площі
+        average_area += area
+
+    # Обчислення середньої площі
+    average_area /= num_experiments
+    return average_area
+
+a = 0.5  # Нижня межа
 b = 2  # Верхня межа
+# Кількість експериментів
+num_experiments = 1
 
 # Створення діапазону значень для x
 x = np.linspace(-0.5, 2.5, 400)
@@ -40,8 +64,11 @@ ax.axvline(x=a, color='gray', linestyle='--')
 ax.axvline(x=b, color='gray', linestyle='--')
 ax.set_title('Графік інтегрування f(x) = x^2 від ' + str(a) + ' до ' + str(b))
 plt.grid()
-plt.show()
+#plt.show()
 
 result, error = spi.quad(f, a, b)
 
 print("Інтеграл: ", result, error)
+
+average_area = monte_carlo_simulation(a, b, num_experiments, f)
+print(f"Середня площа за {num_experiments} експериментів: {average_area}")
